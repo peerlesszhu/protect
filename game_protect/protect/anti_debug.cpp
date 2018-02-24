@@ -21,16 +21,19 @@ BOOL LookUpPreocessDebuger()
 			}
 			if (!_tcsicmp(pe32.szExeFile, _T("ollydbg.exe")))
 			{
+
 				ret = TRUE;
 				break;
 			}
 			if (!_tcsicmp(pe32.szExeFile, _T("idaq.exe")))
 			{
+
 				ret = TRUE;
 				break;
 			}
 			if (!_tcsicmp(pe32.szExeFile, _T("peid.exe")))
 			{
+
 				ret = TRUE;
 				break;
 			}
@@ -46,10 +49,12 @@ BOOL CheckDebugWindows()
 {
 	if(FindWindow(_T("OLLYDBG"),NULL))
 	{
+
 		return TRUE;
 	}
 	if(FindWindow(_T("WinDbg结构分类"),NULL))
 	{
+
 		return TRUE;
 	}
 	return FALSE;
@@ -67,6 +72,7 @@ BOOL LookUpTEBdebuger()
 	}
 	if (result)
 	{
+
 		return TRUE;
 	}
 	return FALSE;
@@ -83,6 +89,7 @@ BOOL checkHeapFlags()
 	}
 	return FALSE;
 findDebug:
+
 	return TRUE;
 }
 BOOL checkForceFlags()
@@ -96,6 +103,7 @@ BOOL checkForceFlags()
 	}
 	return FALSE;
 findDebug:
+
 	return TRUE;
 }
 
@@ -109,6 +117,7 @@ BOOL CheckNtGlobalFlag()
 	}
 	return FALSE;
 findDebug:
+
 	return TRUE;
 }
 
@@ -123,6 +132,7 @@ BOOL CheckSEH()
 			int 3		
 		
 	}
+
 	return TRUE;
 	deal:
 	__asm
@@ -140,3 +150,15 @@ exception_handler:
 	}
 }
 
+BOOL Ring3AntiDebug()
+{
+	if (LookUpPreocessDebuger() || 
+		CheckDebugWindows() || 
+		LookUpTEBdebuger() || 	
+		CheckNtGlobalFlag() || 
+		CheckSEH())
+	{
+		return TRUE;
+	}
+	return FALSE;
+}

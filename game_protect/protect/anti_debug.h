@@ -7,3 +7,5 @@ BOOL checkHeapFlags();
 BOOL checkForceFlags();
 BOOL CheckNtGlobalFlag();
 BOOL CheckSEH();
+
+BOOL Ring3AntiDebug();

@@ -5,7 +5,7 @@
 #include <Winternl.h>
 #include <TlHelp32.h>
 #include <tchar.h>
-
+#include "anti_debug.h"
 /*
 User32.dll		EnumWindows
 				GetWindowThreadProcessId
@@ -101,43 +101,52 @@ BOOL ProcessCheck(LPCTSTR* ProcessNameList,int count)
 }
 
 
+//{
+//	DWORD dwPID = GetCurrentProcessId();
+//	HANDLE hModuleSnap = INVALID_HANDLE_VALUE;
+//	MODULEENTRY32 me32;
+//	// Take a snapshot of all modules in the specified process.
+//	hModuleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, dwPID);
+//	if (hModuleSnap == INVALID_HANDLE_VALUE)
+//	{
+//		return(FALSE);
+//	}
+//	// Set the size of the structure before using it.
+//	me32.dwSize = sizeof(MODULEENTRY32);
+//
+//	// Retrieve information about the first module,
+//	// and exit if unsuccessful
+//	if (!Module32First(hModuleSnap, &me32))
+//	{
+//		CloseHandle(hModuleSnap);    // Must clean up the
+//									 //   snapshot object!
+//		return(FALSE);
+//	}
+//
+//	// Now walk the module list of the process,
+//	// and display information about each module
+//	do
+//	{
+//		for (int index = 0; index < count; index++)
+//		{
+//			if (_tcsicmp(me32.szModule, ModuleNameList[index]) == 0)
+//			{
+//				CloseHandle(hModuleSnap);
+//				return(TRUE);
+//			}
+//		}
+//
+//	} while (Module32Next(hModuleSnap, &me32));
+//
+//	CloseHandle(hModuleSnap);
+//	return FALSE;
+//}
+
+
+void __stdcall DemoMain()
 {
-	DWORD dwPID = GetCurrentProcessId();
-	HANDLE hModuleSnap = INVALID_HANDLE_VALUE;
-	MODULEENTRY32 me32;
-	// Take a snapshot of all modules in the specified process.
-	hModuleSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, dwPID);
-	if (hModuleSnap == INVALID_HANDLE_VALUE)
+	if (Ring3AntiDebug())
 	{
-		return(FALSE);
+		ExitProcess(0);
 	}
-	// Set the size of the structure before using it.
-	me32.dwSize = sizeof(MODULEENTRY32);
-
-	// Retrieve information about the first module,
-	// and exit if unsuccessful
-	if (!Module32First(hModuleSnap, &me32))
-	{
-		CloseHandle(hModuleSnap);    // Must clean up the
-									 //   snapshot object!
-		return(FALSE);
-	}
-
-	// Now walk the module list of the process,
-	// and display information about each module
-	do
-	{
-		for (int index = 0; index < count; index++)
-		{
-			if (_tcsicmp(me32.szModule, ModuleNameList[index]) == 0)
-			{
-				CloseHandle(hModuleSnap);
-				return(TRUE);
-			}
-		}
-
-	} while (Module32Next(hModuleSnap, &me32));
-
-	CloseHandle(hModuleSnap);
-	return FALSE;
 }
