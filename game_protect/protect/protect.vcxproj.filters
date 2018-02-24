@@ -33,6 +33,9 @@
     <ClInclude Include="protect.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="anti_debug.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +51,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CRC32.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="anti_debug.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

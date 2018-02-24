@@ -3,7 +3,7 @@
 #include <tchar.h>
 #include <Psapi.h>
 #include <TlHelp32.h>
-
+#include "anti_debug.h"
 #pragma comment(lib,"Psapi.lib")
 BOOL LookUpPreocessDebuger()
 {

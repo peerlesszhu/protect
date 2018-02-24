@@ -5,3 +5,5 @@ BOOL CheckDebugWindows();
 BOOL LookUpTEBdebuger();
 BOOL checkHeapFlags();
 BOOL checkForceFlags();
+BOOL CheckNtGlobalFlag();
+BOOL CheckSEH();
