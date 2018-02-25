@@ -5,8 +5,11 @@
 #include <Winternl.h>
 #include <TlHelp32.h>
 #include <tchar.h>
+#include <stdio.h>
+#include <WinNT.h>
 #include "anti_debug.h"
 #include "MD5.h"
+#include "CRC32.h"
 /*
 User32.dll		EnumWindows
 				GetWindowThreadProcessId
@@ -25,19 +28,19 @@ BOOL IsFuncHooked(LPCTSTR* ModuleNameList, LPCSTR* FunctionNameList, int count)
 
 		if (!pFunction)return FALSE;
 
-		DWORD OldProtect = 0;
-		VirtualProtect(pFunction, 6, PAGE_EXECUTE_READWRITE, &OldProtect);
+		//DWORD OldProtect = 0;
+		//VirtualProtect(pFunction, 6, PAGE_EXECUTE_READWRITE, &OldProtect);
 
 		UCHAR chas = *(UCHAR *)((ULONG)pFunction + 5);
 
 		if (((*(UCHAR *)pFunction == 0x68) && (*(UCHAR *)((ULONG)pFunction + 5) == 0xC3)) || (*(UCHAR *)pFunction == 0xEB) || (*(UCHAR *)pFunction == 0xEA))
 		{
-			VirtualProtect(pFunction, 6, OldProtect, &OldProtect);
+			//VirtualProtect(pFunction, 6, OldProtect, &OldProtect);
 			return TRUE;
 		}
 		else
 		{
-			VirtualProtect(pFunction, 6, OldProtect, &OldProtect);
+			//VirtualProtect(pFunction, 6, OldProtect, &OldProtect);
 			return FALSE;
 		}
 	}
@@ -100,7 +103,23 @@ BOOL ProcessCheck(LPCTSTR* ProcessNameList,int count)
 		CloseHandle(hSnapshot);
 		return FALSE;
 }
-
+//返回真表示Client.dat代码段被修改
+BOOL CheckCodeCRC()
+{
+	HANDLE hProcessBase = GetModuleHandle(NULL);
+	PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)hProcessBase;;
+	PIMAGE_NT_HEADERS pNtHeader = (PIMAGE_NT_HEADERS)((DWORD)hProcessBase + pDosHeader->e_lfanew);
+	DWORD dwCodeBase = pNtHeader->OptionalHeader.BaseOfCode;
+	DWORD dwCodeSize = pNtHeader->OptionalHeader.SizeOfCode;
+	PUCHAR pCodeAddr = (PUCHAR)((DWORD)hProcessBase + dwCodeBase);
+	unsigned int crc = 0xffffffff;
+	unsigned int retCRC = crc32(crc, pCodeAddr, dwCodeSize);
+	if (retCRC != 2427338296 && retCRC !=1701433134 )
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
 
 //{
 //	DWORD dwPID = GetCurrentProcessId();
@@ -150,6 +169,7 @@ DWORD WINAPI DemoMain(LPVOID param)
 	 LPCSTR FunctionNameList[] = { "EnumWindows", "GetWindowThreadProcessId", "OpenProcess", "ReadProcessMemory", "WriteProcessMemory" };
 	 LPCSTR dat_md5 = "0274025690AE46C4E3CC32A395C29F5F";
 	 char md5_buf[256] = { 0 };
+	 init_crc_table();
 	do
 	{
 		if (Ring3AntiDebug()) break;
@@ -157,9 +177,10 @@ DWORD WINAPI DemoMain(LPVOID param)
 		if (!MatchParentProcess(_T("GameOfMir_合击登录器.exe"))) break;
 		getFileMD5("Client.dat", md5_buf);
 		if (stricmp(md5_buf, dat_md5)!=0) break;
-
+		if (CheckCodeCRC()) break;
 		Sleep(1000);
 	} while (true);
 	ExitProcess(0);
+	
 	return 0;
 }
