@@ -47,3 +47,5 @@ extern "C"
 #endif             /* __cplusplus */ 
 
 #endif /* !MD5_H */ 
+
+#pragma warning(disable:4996)

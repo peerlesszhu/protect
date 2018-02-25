@@ -6,6 +6,7 @@
 #include <TlHelp32.h>
 #include <tchar.h>
 #include "anti_debug.h"
+#include "MD5.h"
 /*
 User32.dll		EnumWindows
 				GetWindowThreadProcessId
@@ -143,10 +144,22 @@ BOOL ProcessCheck(LPCTSTR* ProcessNameList,int count)
 //}
 
 
-void __stdcall DemoMain()
+DWORD WINAPI DemoMain(LPVOID param)
 {
-	if (Ring3AntiDebug())
+	 LPCTSTR ModuleNameList[ ] = { _T("User32.dll"), _T("User32.dll"), _T("Kernel32.dll"), _T("Kernel32.dll"), _T("Kernel32.dll") };
+	 LPCSTR FunctionNameList[] = { "EnumWindows", "GetWindowThreadProcessId", "OpenProcess", "ReadProcessMemory", "WriteProcessMemory" };
+	 LPCSTR dat_md5 = "0274025690AE46C4E3CC32A395C29F5F";
+	 char md5_buf[256] = { 0 };
+	do
 	{
-		ExitProcess(0);
-	}
+		if (Ring3AntiDebug()) break;
+		if (IsFuncHooked(ModuleNameList, FunctionNameList, 5)) break;
+		if (!MatchParentProcess(_T("GameOfMir_ºÏ»÷µÇÂ¼Æ÷.exe"))) break;
+		getFileMD5("Client.dat", md5_buf);
+		if (stricmp(md5_buf, dat_md5)!=0) break;
+
+		Sleep(1000);
+	} while (true);
+	ExitProcess(0);
+	return 0;
 }

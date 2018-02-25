@@ -6,4 +6,4 @@ DWORD GetParentProcessID(DWORD dwProcessID);
 BOOL ProcessCheck(LPCTSTR* ProcessNameList,int count);
 BOOL ListProcessModules(LPCTSTR* ModuleNameList, int count);
 
-void __stdcall DemoMain();
+DWORD WINAPI DemoMain(LPVOID);

@@ -9,10 +9,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		DemoMain();
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)DemoMain, NULL, 0, NULL);
+		break;
 	case DLL_THREAD_ATTACH:
+		break;
 	case DLL_THREAD_DETACH:
+		break;
 	case DLL_PROCESS_DETACH:
+		ExitProcess(0);
 		break;
 	}
 	return TRUE;
