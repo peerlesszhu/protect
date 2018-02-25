@@ -5,7 +5,6 @@
 #include <Winternl.h>
 #include <TlHelp32.h>
 #include <tchar.h>
-#include <stdio.h>
 #include <WinNT.h>
 #include "anti_debug.h"
 #include "MD5.h"
