@@ -302,9 +302,9 @@ int getFileMD5(const char* path, char* md5) {
 
 #endif
 
-void main()
-{
-	char buf[256] = { 0 };
-	int a = getFileMD5("C:\\Users\\peerless\\Desktop\\测试环境\\Client.dat", buf);
-	getchar();
-}
+//void main()
+//{
+//	char buf[256] = { 0 };
+//	int a = getFileMD5("C:\\Users\\peerless\\Desktop\\测试环境\\Client.dat", buf);
+//	getchar();
+//}
